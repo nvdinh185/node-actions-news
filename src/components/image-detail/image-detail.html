@@ -1,0 +1,25 @@
+<div *ngIf="imageData">
+    <div class="card-background" *ngFor="let md of imageData; let idx = index;">
+        <!-- Hiển thị từng ảnh với kích cỡ thật khác nhau theo độ rộng của component -->
+        <img class="one-image" *ngIf="md.src" [src]="md.src" alt="{{md.alt}}"/>
+        <button class="close-button" icon-only ion-button clear color="danger" (click)="onClickMedia(idx,md)">
+            <ion-icon name="close"></ion-icon>
+        </button>
+
+        <!-- Cho phép các nút bình luận, thích theo từng ảnh nếu cần -->
+        <ion-item>
+            <ion-label *ngIf="!md.isEditting" text-wrap>{{md.alt}}</ion-label>
+            <!-- Ô nhập nội dung chi tiết của ảnh đó -->
+            <ion-textarea *ngIf="md.isEditting" rows="1" 
+            class="text-area" 
+            placeholder="Hãy nhập nội dung của ảnh" 
+            [(ngModel)]="md.alt"  
+            (focusout)="onClickEdit(md)"
+            autosize></ion-textarea>
+            <button item-end icon-only ion-button clear color="{{(md.isEditting?'danger':'primary')}}" (click)="onClickEdit(md)">
+                <ion-icon name="{{(md.isEditting?'ios-create-outline':'ios-create')}}"></ion-icon>
+            </button>
+        </ion-item>
+
+    </div>
+</div>

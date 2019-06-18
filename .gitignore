@@ -1,0 +1,48 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+*~
+*.sw[mnpcod]
+*.log
+*.tmp
+*.tmp.*
+log.txt
+*.sublime-project
+*.sublime-workspace
+.vscode/
+npm-debug.log*
+
+.idea/
+.ionic/
+.sourcemaps/
+.sass-cache/
+.tmp/
+.versions/
+coverage/
+dist/
+node_modules/
+keys/
+tmp/
+
+logs/*.log
+service.pid
+cert/*.pem
+
+temp/
+#phai day www len server cho ionic hoat dong
+www/
+#khong day google-key
+www/index.html
+#khong day google-key
+
+#khong truyen file screen_shot_images len
+screen_shot_images/
+platforms/
+plugins/
+plugins/android.json
+plugins/ios.json
+$RECYCLE.BIN/
+
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate

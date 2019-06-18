@@ -1,0 +1,120 @@
+<ion-header>
+  <ion-navbar color="dark-blue">
+
+    <ion-title>{{(postData.title?postData.title:'Tạo bài viết')}}</ion-title>
+
+    <ion-buttons right>
+        <button ion-button (click)="onClickCancel()">Bỏ qua</button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <!-- Thanh thông tin người dùng ở đây -->
+  <ion-item  *ngIf="userInfo">
+    <ion-avatar item-start>
+        <!-- <img *ngIf="userInfo?.data?.image" [src]="userInfo?.data?.image"> -->
+        <!-- *ngIf="!(userInfo?.data?.image)"  -->
+        <img src="{{(userInfo?.data?.image)?'userInfo?.data?.image':'/assets/imgs/no-image-go.jpg'}}">
+    </ion-avatar>
+    <ion-title>{{userInfo?.data?.fullname?userInfo?.data?.fullname:userInfo?.username}}</ion-title>
+    <ion-icon item-end name="{{(statusIcon[postData.status]?statusIcon[postData.status]:'md-globe')}}"></ion-icon>
+  </ion-item>
+
+  <ion-item *ngIf="postData?.content!=undefined">
+    <!-- Ô nhập nội dung text area ở đây -->
+    <ion-textarea rows="3" 
+    class="text-area" 
+    placeholder="{{(postData.hint?postData.hint:'Hãy nhập nội dung bạn muốn chia sẻ ở đây?')}}"
+    [(ngModel)]="postData.content"
+    (ionFocus)="onFocusIn()"
+    (focusout)="onFocusOut()"
+    autosize></ion-textarea>
+    <button *ngIf="postData?.content?.length>0" item-end icon-only ion-button clear color="danger" (click)="onClickResetTextArea()">
+        <ion-icon name="close"></ion-icon>
+    </button>
+  </ion-item>
+
+
+  <!-- Ô hiển thị xem trước như hiển thị ở nội dung post xong -->
+  <content-card *ngIf="!isTextAreaFocus && (postData?.content | linkify:'links')?.length>0" [contentData] = "postData.content"></content-card>
+
+  <!-- Các lệnh upload ảnh / video / file bất kỳ ở đây -->
+  <ion-grid *ngIf="!((postData?.content | linkify:'links')?.length>0)">
+    <ion-row>
+      <ion-col *ngIf="postData.medias && !(postData?.files?.length>0)" style="text-align: center;">
+        <button ion-button icon-start round class="card-button">
+          <input *ngIf="postData.isSingleFile" class="file-over" type="file" accept="image/*" (change)="fileChangeImage($event)">
+          <input *ngIf="!postData.isSingleFile" class="file-over" type="file" multiple accept="image/*" (change)="fileChangeImage($event)">
+          <ion-icon name="images"></ion-icon>
+          +Ảnh
+        </button>
+      </ion-col>
+      <!-- <ion-col style="text-align: center;">
+        <button ion-button icon-start round class="card-button">
+          <input class="file-over" type="file" multiple accept="video/*" (change)="fileChangeVideo($event)">
+          <ion-icon name="ios-videocam-outline"></ion-icon>
+          Video
+        </button>
+      </ion-col> -->
+      <ion-col *ngIf="postData.files && !(postData?.medias?.length>0)" style="text-align: center;">
+        <button ion-button icon-start round class="card-button">
+          <input  *ngIf="postData.isSingleFile" class="file-over" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" (change)="fileChangeAny($event)">
+          <input  *ngIf="!postData.isSingleFile" class="file-over" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" (change)="fileChangeAny($event)">
+          <ion-icon name="ios-document-outline"></ion-icon>
+          +Tài liệu
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Các hình ảnh được hiển thị lên đây, cho phép bấm xem chi tiết và xóa từng ảnh, hoặc thêm ảnh -->
+  <div *ngIf="postData.medias&&postData.medias.length>0" class="background-height">
+      <!-- Ảnh rút gọn trong 5 ảnh đầu tiên -->
+      <image-card *ngIf="!isShowDetail" [imageData] = "postData.medias" (onClickSub)="onClickMedia($event)"></image-card>
+      <!-- Ảnh chi tiết từng ảnh sẽ hiển thị tuần tự cho phép xóa, chỉnh sửa -->
+      <image-detail *ngIf="isShowDetail" [imageData] = "postData.medias" (onClickSub)="onClickRemoveImage($event)"></image-detail>
+
+      <!-- Xem chi tiết các ảnh hiển thị ra -->
+      <ion-row>
+        <ion-col>
+          <button class="card-button" ion-button block (click)="onClickShowDetail()">
+            {{(isShowDetail?"Thu gọn lại":"Chỉnh sửa ảnh")}}
+          </button>
+        </ion-col>
+      </ion-row>
+
+  </div>
+
+  <!-- Liệt kê các file chọn được -->
+  <ion-item *ngFor="let file of postData.files; let idx=index;">
+      <ion-avatar item-start tappable (click)="onClickViewFile(file)">
+          <img src="{{file.type | iconType}}">
+      </ion-avatar>
+      <ion-label>{{file.alt}}</ion-label>
+      <button item-end icon-only ion-button clear color="primary" (click)="onClickRemoveFile(idx)">
+          <ion-icon name="close"></ion-icon>
+      </button>
+  </ion-item>
+
+  <!-- Chọn lựa chia sẻ với ai -->
+  <ion-item *ngIf="postData.status">
+      <ion-label>Chia sẻ với:</ion-label>
+      <ion-select [(ngModel)]="postData.status">
+          <ion-option *ngFor="let mySet of statusOptions" value="{{mySet.value}}" >{{mySet.name}}</ion-option>
+      </ion-select>
+  </ion-item>
+  <!-- Nút đăng sẽ hiể thị khi một trong những nội dung được nhập -->
+  <ion-grid *ngIf="postData.action">
+    <ion-row>
+      <ion-col>
+        <button ion-button block 
+        (click)="onClickPost(postData.action)" 
+        [disabled]="(postData?.content?.length<=0&&postData?.medias?.length<=0&&postData?.files?.length<=0)">
+          Đăng
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

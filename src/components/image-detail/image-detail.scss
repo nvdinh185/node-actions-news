@@ -1,0 +1,16 @@
+image-detail{
+    .card-background {
+        position: relative;
+    }
+    .card-background .one-image{
+        margin: 2px;
+    }
+    .card-background .close-button {
+		position: absolute;
+        top: 3%;
+        left: 90%;
+        z-index: 99;
+        opacity: 0.9;
+        cursor: pointer;
+	}
+}

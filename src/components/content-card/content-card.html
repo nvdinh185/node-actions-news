@@ -1,0 +1,74 @@
+<div *ngIf="contentData">
+    <!-- Hiển thị nội dung chuyển đổi \n, url ra link, url.image ra thẻ ảnh??? 
+        chỉ hiển thị short nội dung, còn lại nút more... -->
+    <p text-wrap [innerHtml]="(contentData | newline | slice:0:(!isReadMore?maxCharacter:(contentData | newline)?.length)) + (!isReadMore && (contentData | newline)?.length>maxCharacter?' •••':'') | linkify"></p>
+    <div *ngIf="!isReadMore && (contentData | newline)?.length>maxCharacter">
+            <ion-note style="color: rgb(36, 93, 250)" tappable (click)="readMoreContent()">Đọc thêm</ion-note>
+    </div>
+
+    <!-- Hiển thị một ảnh đại diện trong các link lấy được
+        gồm ảnh, domain có liên kết với tin url gốc + title của link
+        như short detail trong link share của facebook
+        Một ảnh đại diện, một domain và một title
+        Toàn bộ nội dung hiển thị đó được gắng trong một thẻ card để bấm vào là gọi inapp
+     -->
+    <div *ngIf="!urlData&&!urlData?.length>0 && (contentData | linkify:'urlInfos')?.length>0">
+        <div *ngFor="let urlInfo of contentData | linkify:'urlInfos'; let idx = index;">
+            <!-- <div *ngIf="idx===0"> -->
+                <ion-row no-padding>
+                    <ion-col no-padding col-12 col-xl-8 col-lg-6 col-md-6 col-sm-6>
+                        <!-- Hiển thị item như facebook gồm hostname và title thay cho link1... -->
+                        <ion-item no-padding tappable (click)="onClickItemHostname(urlInfo.hostname,urlInfo.url)">
+                            <strong *ngIf="urlInfo.content||(urlInfo.images&&urlInfo.images.length>0)">{{urlInfo.hostname}}</strong>
+                            <p text-wrap><strong *ngIf="urlInfo.title&&(urlInfo.content||(urlInfo.images&&urlInfo.images.length>0))">{{urlInfo.title}}</strong></p>
+                        </ion-item>
+                        <!-- Hiển thị nội dung dịch được của url chứa trong tin tức nhập vào -->
+                        <p text-wrap [innerHtml]="(urlInfo.content | newline | slice:0:(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)) + ((urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)?'•••':'')"></p>
+                        <div *ngIf="(urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)">
+                            <ion-note style="color: rgb(36, 93, 250)" tappable (click)="readMore(urlInfo)">Đọc thêm</ion-note>
+                        </div>
+                    </ion-col>
+                    <!-- Hiển thị 1-5 ảnh đại diện dịch được từ link, khi bấm vào ảnh sẽ trả đối tượng dịch được để parent xử lý -->
+                    <ion-col no-padding *ngIf="urlInfo.images&&urlInfo.images.length>0" col-12 col-xl-4 col-lg-6
+                        col-md-6 col-sm-6 class="background-height">
+                        <image-card tappable [imageData]="urlInfo.images" (onClickSub)="onClickMedia(urlInfo)"></image-card>
+                    </ion-col>
+                </ion-row>
+            <!-- </div> -->
+        </div>
+    </div>
+
+
+    <!-- Trường hợp đã biên dịch trên máy chủ sẽ hiển thị nội dung ra luôn không cần pipe...-->
+    <div *ngIf="urlData?.length>0">
+        <div *ngFor="let urlInfo of urlData; let idx = index;">
+            <ion-row no-padding>
+                <ion-col no-padding col-12 col-xl-8 col-lg-6 col-md-6 col-sm-6>
+                    
+                    <ion-item no-padding tappable (click)="onClickItemHostname(urlInfo.hostname,urlInfo.url)">
+                        <strong *ngIf="urlInfo.content||(urlInfo.images&&urlInfo.images.length>0)">{{urlInfo.hostname}}</strong>
+                        <p text-wrap><strong *ngIf="urlInfo.title&&(urlInfo.content||(urlInfo.images&&urlInfo.images.length>0))">{{urlInfo.title}}</strong></p>
+                    </ion-item>
+                    
+                    <p text-wrap [innerHtml]="(urlInfo.content | newline | slice:0:(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)) + ((urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)?'•••':'')"></p>
+                    <div *ngIf="(urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)">
+                        <ion-note style="color: rgb(36, 93, 250)" tappable (click)="readMore(urlInfo)">đọc thêm</ion-note>
+                    </div>
+
+                </ion-col>
+                <ion-col no-padding *ngIf="urlInfo.images&&urlInfo.images.length>0" col-12 col-xl-4 col-lg-6
+                    col-md-6 col-sm-6 class="background-height">
+                    <image-card [imageData]="urlInfo.images" (onClickSub)="onClickMedia($event,urlInfo.hostname,urlInfo.url)"></image-card>
+                </ion-col>
+            </ion-row>
+        </div>
+    </div>
+
+    <!-- Hiển thị các link cho nút bấm inappBrowser sử dụng trong app trên ios và android -->
+    <!-- <ion-buttons *ngIf="(contentData | linkify:'links')?.length>0">
+        <button *ngFor="let url of (contentData | linkify:'links'); let idx = index;" ion-button round outline (click)="onClickItem(url)">
+            Xem link {{(idx + 1)}}
+        </button>
+    </ion-buttons> -->
+
+</div>

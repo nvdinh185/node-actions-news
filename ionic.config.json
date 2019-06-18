@@ -1,0 +1,7 @@
+{
+  "name": "web.quan-ly-nha-tram",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
