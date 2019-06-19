@@ -1,0 +1,81 @@
+popover-card {
+
+  .item-card {
+		border-radius: 1.5em;
+		opacity: 0.9;
+		padding: 10px;
+  }
+  
+  .item-selected:hover{
+    opacity: 0.5;
+    background-color: #327eff
+  }
+
+  .dot:hover {
+    border-width: 2px;
+    border-color: #327eff;
+  }
+
+  .border-card:hover {
+    opacity: 0.5;
+    background-color: #327eff;
+  }
+
+  .text-button {
+    padding: 0;
+    text-align: center;
+    min-height: 20px;
+    line-height: 18px;
+  }
+
+  .text-smaller {
+    font-size: 12px;
+  }
+
+  .text-larger {
+    font-size: 16px;
+  }
+
+  .row-dots {
+    text-align: center;
+
+    .dot {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      margin: 10px auto;
+      position: relative;
+    }
+  }
+
+  .dot-white {
+    background-color: rgb(255,255,255);
+  }
+
+  .dot-tan {
+    background-color: rgb(249,241,228);
+  }
+
+  .dot-grey {
+    background-color: rgb(76,75,80);
+  }
+
+  .dot-black {
+    background-color: rgb(0,0,0);
+  }
+
+}
+
+popover-card {
+    .text-smaller {
+        border-right: 1px solid $list-ios-border-color;
+    }
+
+    .row-dots {
+        border-bottom: 1px solid $list-ios-border-color;
+    }
+
+    .dot {
+        border: 1px solid $list-ios-border-color;
+    }
+}

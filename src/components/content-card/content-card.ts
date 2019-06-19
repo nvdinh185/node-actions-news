@@ -38,8 +38,9 @@ export class ContentCard {
         this.onClickSub.emit({link:{hostname,url}});
     }
 
-    onClickMedia(urlInfo){
-        this.onClickImage.emit({url_info: urlInfo});
+    onClickMedia(event,hostname,url){
+        this.onClickSub.emit({link:{hostname,url}});
+        //this.onClickImage.emit(event);
     }
 
     readMore(obj){

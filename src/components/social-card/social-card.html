@@ -1,0 +1,55 @@
+<!-- Các kết quả ghi nhận được -->
+<ion-item no-padding *ngIf="
+        (resultData?.likes?.length>0)
+        ||
+        (resultData?.comments?.length>0)
+        ||
+        (resultData?.shares?.length>0)">
+    <ion-row no-padding>
+        <ion-col no-padding align-self-center text-center>
+            <div *ngIf="resultData?.likes?.length>0">
+                <ion-icon *ngIf="resultData?.likes?.like>0" color="{{iconLikes?.like?.color}}" icon-start clear small name="{{iconLikes?.like?.icon}}"></ion-icon>
+                <ion-icon *ngIf="resultData?.likes?.love>0" color="{{iconLikes?.love?.color}}" icon-start clear small name="{{iconLikes?.love?.icon}}"></ion-icon>
+                <ion-icon *ngIf="resultData?.likes?.unlike>0" color="{{iconLikes?.unlike?.color}}" icon-start clear small name="{{iconLikes?.unlike?.icon}}"></ion-icon>
+                <ion-icon *ngIf="resultData?.likes?.sad>0" color="{{iconLikes?.sad?.color}}" icon-start clear small name="{{iconLikes?.sad?.icon}}"></ion-icon>
+                <ion-icon *ngIf="resultData?.likes?.angery>0" color="{{iconLikes?.angery?.color}}" icon-start clear small name="{{iconLikes?.angery?.icon}}"></ion-icon>
+                <ion-note *ngIf="resultData?.likes?.length>0">{{resultData?.likes?.length}}</ion-note>
+            </div>
+        </ion-col>
+        <ion-col no-padding  align-self-center text-center>
+            <ion-note *ngIf="resultData?.comments?.length>0">{{(resultData?.comments?.length)}} Comments</ion-note>
+        </ion-col>
+        <ion-col no-padding  align-self-center text-center>
+            <ion-note *ngIf="resultData?.shares?.length>0">{{(resultData?.shares?.length)}} Shares</ion-note>
+        </ion-col>
+    </ion-row>
+</ion-item>
+
+<!-- Các nút lệnh cho phép hành động like, comment, share -->
+<ion-item no-padding *ngIf="actionData?.like || actionData?.comment || actionData?.share">
+    <ion-row>
+        <!-- <ion-col no-padding text-center>
+            <button *ngIf="actionData?.like" ion-button clear small 
+            color="{{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].color:actionData?.like?.color)}}" 
+            (click)="onClickActions($event,actionData?.like)"
+                icon-start>
+                <ion-icon name="{{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].icon:actionData?.like?.icon)}}"></ion-icon>
+                {{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].name:actionData?.like?.name)}}
+            </button>
+        </ion-col> -->
+        <ion-col no-padding text-center>
+            <button *ngIf="actionData?.comment" ion-button clear small color="{{actionData?.comment?.color}}" (click)="onClickActions($event,actionData?.comment)"
+                icon-start>
+                <ion-icon name='{{actionData?.comment?.icon}}'></ion-icon>
+                {{actionData?.comment?.name}}
+            </button>
+        </ion-col>
+        <ion-col no-padding text-center>
+            <button *ngIf="actionData?.share" ion-button clear small color="{{actionData?.share?.color}}" (click)="onClickActions($event,actionData?.share)"
+                icon-start>
+                <ion-icon name='{{actionData?.share?.icon}}'></ion-icon>
+                {{actionData?.share?.name}}
+            </button>
+        </ion-col>
+    </ion-row>
+</ion-item>

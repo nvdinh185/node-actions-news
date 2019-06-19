@@ -1,0 +1,43 @@
+<!-- Lựa chọn tab theo kiểu bảng -->
+<ion-row *ngIf="dynamicForm?.type==='tab'">
+    <ion-col>
+        <button (click)="selectedValue('smaller')" ion-item detail-none class="text-button text-smaller border-card">A</button>
+    </ion-col>
+    <ion-col>
+        <button (click)="selectedValue('larger')" ion-item detail-none class="text-button text-larger border-card">A</button>
+    </ion-col>
+</ion-row>
+
+<!-- Mảng icon cần chọn ví dụ như lựa chọn cảm xúc -->
+<ion-toolbar *ngIf="dynamicForm?.type==='icon'" class="item-card">
+    <ion-buttons>
+        <button *ngFor="let it of dynamicForm?.menu; let idx=index;" ion-button icon-only color="{{it.color}}" (click)="selectedValue(it.value)">
+            <ion-icon name="{{it.icon}}"></ion-icon>
+        </button>             
+    </ion-buttons>
+</ion-toolbar>
+
+<!-- Chọn màu nền, thiết kế màu để chọn lựa -->
+<ion-row *ngIf="dynamicForm?.type==='color'" class="row-dots">
+    <ion-col>
+        <button ion-button="dot" (click)="selectedValue('white')" class="dot-white" [class.selected]="background == 'white'"></button>
+    </ion-col>
+    <ion-col>
+        <button ion-button="dot" (click)="selectedValue('tan')" class="dot-tan" [class.selected]="background == 'tan'"></button>
+    </ion-col>
+    <ion-col>
+        <button ion-button="dot" (click)="selectedValue('grey')" class="dot-grey" [class.selected]="background == 'grey'"></button>
+    </ion-col>
+    <ion-col>
+        <button ion-button="dot" (click)="selectedValue('black')" class="dot-black" [class.selected]="background == 'black'"></button>
+    </ion-col>
+</ion-row>
+
+<!-- Chọn một mảng giá trị biểu tượng và mô tả danh sách theo menu xuống -->
+<ion-list *ngIf="dynamicForm?.type==='item'">
+    <ion-item *ngFor="let it of dynamicForm?.menu; let idx=index;" tappable class="item-selected" (click)="selectedValue(it.value)">
+        <ion-icon *ngIf="it.icon" item-start name="{{it.icon}}" color="{{it.color}}"></ion-icon>
+        <ion-label>{{it.name}}</ion-label>
+    </ion-item>
+</ion-list>
+

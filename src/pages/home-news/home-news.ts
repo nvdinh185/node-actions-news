@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Events, ModalController } from 'ionic-angular';
-import { PostNewsPage } from '../post-news/post-news';
 import { ApiAuthService } from '../../services/apiAuthService';
 import { DynamicCardSocialPage } from '../dynamic-card-social/dynamic-card-social';
 import { ApiContactService } from '../../services/apiContactService';
@@ -82,7 +81,7 @@ export class HomeNewsPage {
   }
 
   getHomeNews(reNews?: boolean) {
-    // console.log("456", this.contacts)
+    //console.log("456", this.contacts)
     this.dynamicCards.title = "Đây là trang tin của " + (this.userInfo ? this.userInfo.username : "Public")
     if (reNews) {
       this.lastPageIndex = this.curPageIndex > 0 ? this.curPageIndex : this.lastPageIndex;
@@ -94,7 +93,7 @@ export class HomeNewsPage {
     this.getJsonPostNews()
       .then(data => {
         if (reNews) {
-          console.log("new: ", data)
+          //console.log("new: ", data)
           let isHaveNew = 0;
           data.reverse().forEach((el, idx) => {
             let index = this.dynamicCards.items
@@ -115,9 +114,6 @@ export class HomeNewsPage {
             }
           })
         }
-        console.log("length: ", this.dynamicCards.items.length)
-        console.log("curPageIndex: ", this.curPageIndex)
-        console.log("lastPageIndex: ", this.lastPageIndex)
       })
       .catch(err => console.log(err))
   }
@@ -140,7 +136,7 @@ export class HomeNewsPage {
     //console.log("json_data", json_data)
     return this.auth.postDynamicForm(this.server + "/get-news", json_data, true)
       .then(data => {
-        //console.log("789", data)
+        console.log("789", data)
         let items = [];
         data.forEach(el => {
           let medias = [];
@@ -154,12 +150,11 @@ export class HomeNewsPage {
               medias.push(e);
             })
           }
-
           el.medias = medias;
           el.actions = {
-            like: { name: "LIKE", color: "primary", icon: "thumbs-up", next: "LIKE" }
-            , comment: { name: "COMMENT", color: "primary", icon: "chatbubbles", next: "COMMENT" }
-            , share: { name: "SHARE", color: "primary", icon: "share-alt", next: "SHARE" }
+            like: true
+            , comment: true
+            , share: true
           }
           el.short_detail = {
             p: el.title

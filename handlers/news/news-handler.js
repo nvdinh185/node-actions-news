@@ -44,7 +44,7 @@ class ResourceHandler {
         //console.log("users: ", users)
         db.getRsts("select *\
                     from news\
-                    where user in ("+ users + ")\
+                    where username in ("+ users + ")\
                     order by time desc\
                     LIMIT "+ (req.json_data && req.json_data.limit ? req.json_data.limit : 6) + "\
                     OFFSET "+ (req.json_data && req.json_data.offset ? req.json_data.offset : 0) + "\

@@ -22,16 +22,15 @@
                             <strong *ngIf="urlInfo.content||(urlInfo.images&&urlInfo.images.length>0)">{{urlInfo.hostname}}</strong>
                             <p text-wrap><strong *ngIf="urlInfo.title&&(urlInfo.content||(urlInfo.images&&urlInfo.images.length>0))">{{urlInfo.title}}</strong></p>
                         </ion-item>
-                        <!-- Hiển thị nội dung dịch được của url chứa trong tin tức nhập vào -->
+
                         <p text-wrap [innerHtml]="(urlInfo.content | newline | slice:0:(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)) + ((urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)?'•••':'')"></p>
                         <div *ngIf="(urlInfo.content | newline)?.length>(!urlInfo.is_readmore?maxCharacter:urlInfo.is_readmore)">
                             <ion-note style="color: rgb(36, 93, 250)" tappable (click)="readMore(urlInfo)">Đọc thêm</ion-note>
                         </div>
                     </ion-col>
-                    <!-- Hiển thị 1-5 ảnh đại diện dịch được từ link, khi bấm vào ảnh sẽ trả đối tượng dịch được để parent xử lý -->
                     <ion-col no-padding *ngIf="urlInfo.images&&urlInfo.images.length>0" col-12 col-xl-4 col-lg-6
                         col-md-6 col-sm-6 class="background-height">
-                        <image-card tappable [imageData]="urlInfo.images" (onClickSub)="onClickMedia(urlInfo)"></image-card>
+                        <image-card [imageData]="urlInfo.images" (onClickSub)="onClickMedia($event,urlInfo.hostname,urlInfo.url)"></image-card>
                     </ion-col>
                 </ion-row>
             <!-- </div> -->

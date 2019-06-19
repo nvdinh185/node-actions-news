@@ -26,6 +26,8 @@ import { ContentCard } from '../components/content-card/content-card';
 import { ImageCard } from '../components/image-card/image-card';
 import { ImageDetail } from '../components/image-detail/image-detail';
 import { IconFileTypePipe } from '../pipes/icon-type';
+import { SocialCard } from '../components/social-card/social-card';
+import { PopoverCard } from '../components/popover-card/popover-card';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { IconFileTypePipe } from '../pipes/icon-type';
     ContentCard,
     ImageCard,
     ImageDetail,
-    IconFileTypePipe
+    IconFileTypePipe,
+    SocialCard,
+    PopoverCard
   ],
   imports: [
     BrowserModule,

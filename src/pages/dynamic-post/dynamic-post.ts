@@ -243,9 +243,6 @@ export class DynamicPostPage implements OnInit {
 
         let form_data: FormData = new FormData();
 
-        //gán cho biến đường dẫn con lưu trữ file độc lập??
-        //form_data.append("subdirectory","test");
-
         //Các nội dung cần luu trữ vào csdl
         //trong đó lưu ý 3 tham số là options và image_options_ và file_options thì cần phải parse sang json 
         form_data.append("content", this.postData.content);
@@ -287,7 +284,7 @@ export class DynamicPostPage implements OnInit {
         //group_id, content, title
         this.apiAuth.postDynamicFormData(btn.url, form_data, true)
           .then(data => {
-            //console.log('data',data);
+            console.log('data',data);
 
             loading.dismiss();
 
