@@ -28,7 +28,7 @@
 <!-- Các nút lệnh cho phép hành động like, comment, share -->
 <ion-item no-padding *ngIf="actionData?.like || actionData?.comment || actionData?.share">
     <ion-row>
-        <!-- <ion-col no-padding text-center>
+        <ion-col no-padding text-center>
             <button *ngIf="actionData?.like" ion-button clear small 
             color="{{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].color:actionData?.like?.color)}}" 
             (click)="onClickActions($event,actionData?.like)"
@@ -36,7 +36,7 @@
                 <ion-icon name="{{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].icon:actionData?.like?.icon)}}"></ion-icon>
                 {{(resultData?.likes[ownerData?.username]?iconLikes[resultData?.likes[ownerData?.username]].name:actionData?.like?.name)}}
             </button>
-        </ion-col> -->
+        </ion-col>
         <ion-col no-padding text-center>
             <button *ngIf="actionData?.comment" ion-button clear small color="{{actionData?.comment?.color}}" (click)="onClickActions($event,actionData?.comment)"
                 icon-start>
