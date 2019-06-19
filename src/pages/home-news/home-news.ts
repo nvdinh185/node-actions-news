@@ -28,7 +28,7 @@ export class HomeNewsPage {
 
   ngOnInit() {
     setTimeout(() => {
-      console.log(this.dynamicCards.items[0].results)
+      console.log(this.dynamicCards.items[1].results)
       //console.log(this.userInfo)
     }, 2000);
     this.refreshNews();
