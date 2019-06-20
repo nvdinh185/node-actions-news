@@ -27,7 +27,7 @@ export class HomeNewsPage {
   ) { }
 
   ngOnInit() {
-    this.userInfo = { username: "766777123" }
+    this.userInfo = { username: "123456789" }
     setTimeout(() => {
       //console.log(this.dynamicCards.items)
       //console.log(this.userInfo)

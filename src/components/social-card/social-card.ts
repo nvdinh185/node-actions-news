@@ -62,7 +62,6 @@ export class SocialCard implements OnInit {
                     //thuc hien chon lua like neu chap nhan thi them vao
                     this.showRadioLikes(ev, this.ownerData.username);
                 }
-
             }
         } else {
             this.onClickSub.emit({ action });
@@ -91,13 +90,9 @@ export class SocialCard implements OnInit {
         popover.onDidDismiss(data => {
             if (data) {
                 //console.log(data)
-                //console.log(this.resultData.likes)
-                //this.apiAuth.createObjectKey(this.resultData.likes, username, data);
-                //console.log(this.resultData.likes)
+                this.apiAuth.createObjectKey(this.resultData.likes, username, data);
                 if (!this.resultData.likes[data]) Object.defineProperty(this.resultData.likes, data, { value: 0, writable: true, enumerable: true, configurable: true })
                 this.resultData.likes[data] += 1;
-                this.resultData.likes["length"] += 1;
-                //console.log(this.resultData.likes)
                 this.onClickSub.emit({ action: { next: "LIKE" }, result: this.resultData });
             }
         })
