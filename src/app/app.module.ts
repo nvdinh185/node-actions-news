@@ -55,7 +55,8 @@ import { PopoverCard } from '../components/popover-card/popover-card';
   entryComponents: [
     MyApp,
     HomeNewsPage,
-    DynamicPostPage
+    DynamicPostPage,
+    PopoverCard
   ],
   providers: [
     StatusBar,

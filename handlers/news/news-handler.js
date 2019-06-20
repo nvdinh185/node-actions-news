@@ -58,12 +58,12 @@ class ResourceHandler {
                         let countDetails = 0;
                         for (let idx = 0; idx < results.length; idx++) {
                             db.getRsts("select *\
-                                from news_files\
+                                from results\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
                                 .then(files => {
                                     countDetails++;
-                                    results[idx].medias = files;
+                                    results[idx].medias = files[0];
                                     if (countDetails == results.length) {
                                         resolve();
                                     };
@@ -139,6 +139,48 @@ class ResourceHandler {
                     }));
                 })
         }
+    }
+
+    postActions(req, res) {
+        //console.log(req.json_data)
+        let saveDb = new Promise((resolve, reject) => {
+            let sqlInsertGroup = arrObj.convertSqlFromJson(
+                "results",
+                {
+                    group_id: req.json_data.group_id
+                    , likes: JSON.stringify(req.json_data.result)
+                    , comments: JSON.stringify([])
+                    , shares: JSON.stringify([])
+                    , reads: JSON.stringify([])
+                }
+                , ["group_id"]
+            );
+            db.insert(sqlInsertGroup)
+                .then(data => {
+                    resolve(data);
+                })
+                .catch(err => {
+                    if (err.code === "SQLITE_CONSTRAINT") {
+                        db.update(sqlInsertGroup)
+                            .then(data2 => {
+                                resolve(data2);
+                            })
+                            .catch(err1 => {
+                                reject(err1);
+                            })
+                    } else {
+                        reject(err);
+                    }
+                })
+        })
+        saveDb.then(data => {
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify(data));
+        })
+            .catch(err => {
+                res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ error: err, message: "error insert db" }));
+            })
     }
 }
 

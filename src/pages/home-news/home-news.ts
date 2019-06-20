@@ -16,7 +16,7 @@ export class HomeNewsPage {
   userInfo: any;
   curPageIndex = 0;
   lastPageIndex = 0;
-  maxOnePage = 2;
+  maxOnePage = 3;
   contacts = {}
   isShow = false;
 
@@ -27,8 +27,9 @@ export class HomeNewsPage {
   ) { }
 
   ngOnInit() {
+    this.userInfo = { username: "766777123" }
     setTimeout(() => {
-      console.log(this.dynamicCards.items[1].results)
+      //console.log(this.dynamicCards.items)
       //console.log(this.userInfo)
     }, 2000);
     this.refreshNews();
@@ -51,7 +52,7 @@ export class HomeNewsPage {
     //lay cac danh ba public
     this.contacts = this.apiContact.getUniqueContacts();
     //neu chua dang nhap thi lay cac tin cua user public
-    if (!this.userInfo) this.getHomeNews(true);
+    this.getHomeNews(true);
   }
 
   getHomeNews(reNews?: boolean) {
@@ -79,7 +80,7 @@ export class HomeNewsPage {
           })
           if (isHaveNew >= 1 && this.curPageIndex < this.lastPageIndex) this.curPageIndex = this.lastPageIndex + 1
         } else {
-          console.log("data: ", data)
+          //console.log("data: ", data)
           data.forEach((el, idx) => {
             let index = this.dynamicCards.items
               .findIndex(x => x.group_id === el.group_id);
@@ -93,7 +94,6 @@ export class HomeNewsPage {
   }
 
   getJsonPostNews() {
-    let linkFile = this.server + "/get-file/"
     let offset = this.curPageIndex * this.maxOnePage;
     let limit = this.maxOnePage;
     let follows = [];
@@ -106,27 +106,20 @@ export class HomeNewsPage {
       offset: offset,
       follows: follows
     }
-    //console.log(offset)
     //console.log("json_data", json_data)
     return this.auth.postDynamicForm(this.server + "/get-news", json_data, true)
       .then(data => {
-        console.log("789", data)
+        //console.log("789", data)
         let items = [];
         data.forEach(el => {
-          let medias = [];
-          if (el.medias) {
-            el.medias.forEach(e => {
-              if (e.url.includes("upload_files")) {
-                e.image = linkFile + e.url;
-              } else {
-                e.image = e.url;
-              }
-              medias.push(e);
-            })
-          }
-          el.medias = medias;
           el.actions = JSON.parse(el.actions)
           el.results = JSON.parse(el.results)
+          if(el.medias) {
+            el.results.likes = JSON.parse(el.medias.likes)
+            el.results.comments = JSON.parse(el.medias.comments)
+            el.results.shares = JSON.parse(el.medias.shares)
+            el.results.reads = JSON.parse(el.medias.reads)
+          }
           el.short_detail = {
             p: el.title
             , note: el.time
@@ -218,4 +211,15 @@ export class HomeNewsPage {
       }
     })
   }.bind(this);
+
+  onClickAction(ev, group_id) {
+    //console.log(group_id, ev.result.likes)
+    let json_data = {
+      group_id: group_id,
+      result: ev.result.likes
+    }
+    this.auth.postDynamicFormData(this.server + "/post-actions", json_data, true)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+  }
 }

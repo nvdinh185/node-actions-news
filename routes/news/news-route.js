@@ -20,9 +20,15 @@ router.post('/get-news'
     , postHandler.jsonProcess //lay du lieu req.json_data.friends/follows/publics/limit/offset
     , handlers.getNewsList //lay tin tuc tu req.user?, publics, follows, friends,
 );
+router.post('/post-actions'
+    , tokenHandler.getTokenNext        //lay req.token
+    , tokenHandler.verifyProxyTokenNext  //lay req.user
+    , postHandler.jsonProcess        //lay req.json_data
+    , handlers.postActions        //luu csdl
+);
 router.get('/get-file/*'
-    //, tokenHandler.getToken
-    //, tokenHandler.verifyProxyToken
+    , tokenHandler.getTokenNext
+    , tokenHandler.verifyProxyTokenNext
     , handlers.getMediaFile
 );
 
