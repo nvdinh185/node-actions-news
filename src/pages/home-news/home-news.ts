@@ -27,7 +27,7 @@ export class HomeNewsPage {
   ) { }
 
   ngOnInit() {
-    this.userInfo = { username: "123456789" }
+    this.userInfo = { username: "901952666" }
     setTimeout(() => {
       //console.log(this.dynamicCards.items)
       //console.log(this.userInfo)
@@ -109,7 +109,7 @@ export class HomeNewsPage {
     //console.log("json_data", json_data)
     return this.auth.postDynamicForm(this.server + "/get-news", json_data, true)
       .then(data => {
-        //console.log("789", data)
+        console.log("789", data)
         let items = [];
         data.forEach(el => {
           el.actions = JSON.parse(el.actions)

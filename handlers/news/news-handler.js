@@ -11,25 +11,6 @@ const db = new SQLiteDAO(dbFile);
 
 class ResourceHandler {
 
-    getMediaFile(req, res) {
-        let path = req.pathName
-        let params = path.substring('/site-manager/news/get-file/'.length);
-        let fileRead = params.replace('/', systempath.sep);
-        let contentType;
-
-        if (mime.lookup(fileRead)) contentType = mime.lookup(fileRead);
-
-        fs.readFile(fileRead, { flag: 'r' }, (error, data) => {
-            if (!error) {
-                res.writeHead(200, { 'Content-Type': contentType });
-                res.end(data);
-            } else {
-                res.writeHead(404, { 'Content-Type': 'text/html' });
-                res.end(JSON.stringify(error));
-            }
-        });
-    }
-
     getNewsList(req, res) {
         //req.user,
         //req.json_data.follows,
@@ -117,11 +98,19 @@ class ResourceHandler {
                     details: JSON.stringify(filesDetails),
                     results: JSON.stringify({ likes: {}, comments: {}, shares: {}, reads: {} }),
                     actions: JSON.stringify({ like: true, comment: true, share: true }),
-                    username: "766777123",
+                    username: "901952666",
                     time: Date.now()
+                }
+                let jsonObj2 = {
+                    group_id: groupId,
+                    likes: JSON.stringify({}),
+                    comments: JSON.stringify([]),
+                    shares: JSON.stringify([]),
+                    reads: JSON.stringify([])
                 }
                 try {
                     let resultInsert = await db.insert(arrObj.convertSqlFromJson("news", jsonObj, []));
+                    let resultInsert2 = await db.insert(arrObj.convertSqlFromJson("results", jsonObj2, []));
                     resolve(resultInsert)
                 } catch (e) {
                     reject(e);
@@ -149,28 +138,15 @@ class ResourceHandler {
                 {
                     group_id: req.json_data.group_id
                     , likes: JSON.stringify(req.json_data.result)
-                    , comments: JSON.stringify([])
-                    , shares: JSON.stringify([])
-                    , reads: JSON.stringify([])
                 }
                 , ["group_id"]
             );
-            db.insert(sqlInsertGroup)
+            db.update(sqlInsertGroup)
                 .then(data => {
                     resolve(data);
                 })
                 .catch(err => {
-                    if (err.code === "SQLITE_CONSTRAINT") {
-                        db.update(sqlInsertGroup)
-                            .then(data2 => {
-                                resolve(data2);
-                            })
-                            .catch(err1 => {
-                                reject(err1);
-                            })
-                    } else {
-                        reject(err);
-                    }
+                    reject(err);
                 })
         })
         saveDb.then(data => {

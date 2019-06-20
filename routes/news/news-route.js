@@ -26,10 +26,5 @@ router.post('/post-actions'
     , postHandler.jsonProcess        //lay req.json_data
     , handlers.postActions        //luu csdl
 );
-router.get('/get-file/*'
-    , tokenHandler.getTokenNext
-    , tokenHandler.verifyProxyTokenNext
-    , handlers.getMediaFile
-);
 
 module.exports = router;
