@@ -48,7 +48,7 @@ export class SocialCard implements OnInit {
     onClickActions(ev, action) {
         //console.log('action',action);
         if (action.next === "LIKE") {
-            //console.log("this.ownerData: ", !this.ownerData)
+            //console.log("this.resultData: ", this.resultData.likes)
             if (!this.resultData) this.resultData = {};
             if (!this.resultData["likes"]) Object.defineProperty(this.resultData, "likes", { value: {}, writable: true, enumerable: true, configurable: true })
             if (this.ownerData) {

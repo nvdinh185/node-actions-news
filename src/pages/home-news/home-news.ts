@@ -27,10 +27,10 @@ export class HomeNewsPage {
   ) { }
 
   ngOnInit() {
-    this.userInfo = { username: "901952666" }
+    this.userInfo = { username: "903500888" }
     setTimeout(() => {
-      //console.log(this.dynamicCards.items)
-      //console.log(this.userInfo)
+      console.log(this.dynamicCards.items[0].actions)
+      console.log(this.dynamicCards.items[0].actions.like)
     }, 2000);
     this.refreshNews();
     this.events.subscribe('postok', () => {
@@ -213,7 +213,7 @@ export class HomeNewsPage {
   }.bind(this);
 
   onClickAction(ev, group_id) {
-    //console.log(group_id, ev.result.likes)
+    console.log(group_id, ev)
     let json_data = {
       group_id: group_id,
       result: ev.result.likes

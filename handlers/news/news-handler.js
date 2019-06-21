@@ -1,7 +1,3 @@
-const fs = require('fs');
-const mime = require('mime-types');
-const systempath = require('path');
-
 const arrObj = require('../../utils/array-object');
 
 const SQLiteDAO = require('../../db/sqlite3/sqlite-dao');
