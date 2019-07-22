@@ -1,0 +1,5 @@
+1. Lấy các hành động likes đã lưu trong DB
+2. Hiển thị kết quả ra trình duyệt
+3. Thực hiện các hành động likes và lưu vào DB
+
+4. Post news
