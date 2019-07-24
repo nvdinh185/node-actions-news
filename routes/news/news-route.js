@@ -3,7 +3,7 @@ const router = require('express').Router();
 const postHandler = require('../../utils/post-handler');
 const tokenHandler = require('../../utils/token-proxy');
 
-const resourceHandler = require('../../handlers/news/news-handler');
+const resourceHandler = require('../../handlers/news/news-handler2');
 
 let handlers = resourceHandler.ResourceHandler;
 

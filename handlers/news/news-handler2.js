@@ -2,7 +2,7 @@ const arrObj = require('../../utils/array-object');
 
 const SQLiteDAO = require('../../db/sqlite3/sqlite-dao');
 
-const dbFile = './db/database/news-v1.db';
+const dbFile = './db/database/news-v2.db';
 const db = new SQLiteDAO(dbFile);
 
 class ResourceHandler {
@@ -26,42 +26,24 @@ class ResourceHandler {
                     LIMIT "+ (req.json_data && req.json_data.limit ? req.json_data.limit : 6) + "\
                     OFFSET "+ (req.json_data && req.json_data.offset ? req.json_data.offset : 0) + "\
                     ")
-            .then(results => {
+            .then(async results => {
                 //lay file chi tiet tra cho nhom
-                let detailsPromise = new Promise((resolve, reject) => {
-                    if (!results || results.length === 0) {
-                        resolve();
-                    } else {
-                        let countDetails = 0;
-                        for (let idx = 0; idx < results.length; idx++) {
-                            db.getRsts("select *\
-                                from results\
-                                where group_id = '"+ results[idx].group_id + "'\
-                                ")
-                                .then(files => {
-                                    countDetails++;
-                                    results[idx].medias = files[0];
-                                    if (countDetails == results.length) {
-                                        resolve();
-                                    };
-                                })
-                                .catch(err => reject(err))
-                        }
+                if (results.length > 0) {
+                    for (let idx = 0; idx < results.length; idx++) {
+                        let files = await db.getRsts("select *\
+                                            from results\
+                                            where group_id = '"+ results[idx].group_id + "'\
+                                            ")
+                        results[idx].medias = files[0]
                     }
-                })
-                detailsPromise.then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(results
-                        , (key, value) => {
-                            if (value === null) { return undefined; }
-                            return value
-                        }
-                    ));
-                })
-                    .catch(err => {
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        res.end(JSON.stringify(err));
-                    })
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(results
+                    , (key, value) => {
+                        if (value === null) { return undefined; }
+                        return value
+                    }
+                ));
             }).catch(err => {
                 res.writeHead(404, { 'Content-Type': 'text/html' });
                 res.end(JSON.stringify(err));
@@ -126,33 +108,24 @@ class ResourceHandler {
         }
     }
 
-    postActions(req, res) {
+    async postActions(req, res) {
         //console.log(req.json_data)
-        new Promise((resolve, reject) => {
-            let sqlInsertGroup = arrObj.convertSqlFromJson(
-                "results",
-                {
-                    group_id: req.json_data.group_id
-                    , likes: JSON.stringify(req.json_data.result)
-                }
-                , ["group_id"]
-            );
-            db.update(sqlInsertGroup)
-                .then(data => {
-                    resolve(data);
-                })
-                .catch(err => {
-                    reject(err);
-                })
-        })
-        .then(data => {
+        let sqlInsertGroup = arrObj.convertSqlFromJson(
+            "results",
+            {
+                group_id: req.json_data.group_id
+                , likes: JSON.stringify(req.json_data.result)
+            }
+            , ["group_id"]
+        );
+        try {
+            let data = await db.update(sqlInsertGroup);
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify(data));
-        })
-            .catch(err => {
-                res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
-                res.end(JSON.stringify({ error: err, message: "error insert db" }));
-            })
+        } catch (err) {
+            res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ error: err, message: "error insert db" }));
+        }
     }
 }
 

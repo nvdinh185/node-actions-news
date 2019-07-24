@@ -27,8 +27,8 @@ export class SocialCard implements OnInit {
         like: { name: "Thích", color: "primary", icon: "md-thumbs-up" },
         love: { name: "Đáng yêu", color: "danger", icon: "heart" },
         unlike: { name: "Không thích", color: "dark", icon: "md-thumbs-down" },
-        sad: { name: "Buồn", color: "sad", icon: "ios-sad-outline" },
-        angery: { name: "Giận sôi", color: "angery", icon: "ios-sad" }
+        sad: { name: "Buồn", color: "star", icon: "ios-sad-outline" },
+        angery: { name: "Giận sôi", color: "dr-vilolet", icon: "ios-sad" }
     }
 
     constructor(
@@ -38,9 +38,9 @@ export class SocialCard implements OnInit {
 
     ngOnInit() {
         if (this.actionData) {
-            if (this.actionData["like"]) this.actionData["like"] = { name: "Thích", unname: "Bỏ thích", color: "gray", icon: "thumbs-up", unicon: "ios-notifications-off-outline", next: "LIKE" };
-            if (this.actionData["comment"]) this.actionData["comment"] = { name: "Góp ý", color: "gray", icon: "chatbubbles", next: "COMMENT" };
-            if (this.actionData["share"]) this.actionData["share"] = { name: "Chia sẻ", color: "gray", icon: "share-alt", next: "SHARE" };
+            if (this.actionData["like"]) this.actionData["like"] = { name: "Thích", color: "primary", icon: "thumbs-up", next: "LIKE" };
+            if (this.actionData["comment"]) this.actionData["comment"] = { name: "Góp ý", color: "secondary", icon: "chatbubbles", next: "COMMENT" };
+            if (this.actionData["share"]) this.actionData["share"] = { name: "Chia sẻ", color: "dr-green", icon: "share-alt", next: "SHARE" };
         }
     }
     //khi bấm vào phần tử item (toàn bộ dòng - thuộc tích click=true) 
@@ -48,15 +48,20 @@ export class SocialCard implements OnInit {
     onClickActions(ev, action) {
         //console.log('action',action);
         if (action.next === "LIKE") {
-            //console.log("this.resultData: ", this.resultData.likes)
+            //console.log("this.resultData: ", !this.resultData)
+            //nếu chưa truyền đối tượng resultData qua thì khởi tạo đối tượng này
             if (!this.resultData) this.resultData = {};
+            //nếu đối tượng resultData chưa có thuộc tính likes thì khởi tạo thuộc tính này
             if (!this.resultData["likes"]) Object.defineProperty(this.resultData, "likes", { value: {}, writable: true, enumerable: true, configurable: true })
             if (this.ownerData) {
-                //console.log("a: ", this.resultData)
+                //nếu username đã có cảm xúc và số lượng cảm xúc đó lớn hơn 0
                 if (this.resultData.likes[this.ownerData.username] && this.resultData.likes[this.resultData.likes[this.ownerData.username]]) {
                     //da like truoc do roi, nen bam lan nay la unlike
+                    //giảm số lượng cảm xúc đó 1
                     this.resultData.likes[this.resultData.likes[this.ownerData.username]] -= 1;
+                    //xóa username đó ra khỏi đối tượng resultData
                     this.apiAuth.deleteObjectKey(this.resultData.likes, this.ownerData.username);
+                    //truyền lại đối tượng resultData cho trang gọi component này
                     this.onClickSub.emit({ action: { next: "LIKE" }, result: this.resultData });
                 } else {
                     //thuc hien chon lua like neu chap nhan thi them vao
@@ -90,9 +95,13 @@ export class SocialCard implements OnInit {
         popover.onDidDismiss(data => {
             if (data) {
                 //console.log(data)
+                //thêm cảm xúc cho username vừa thực hiện hành động vào đối tượng resultData
                 this.apiAuth.createObjectKey(this.resultData.likes, username, data);
+                //thêm thuộc tính cảm xúc đó vào nếu chưa có trong đối tượng resultData
                 if (!this.resultData.likes[data]) Object.defineProperty(this.resultData.likes, data, { value: 0, writable: true, enumerable: true, configurable: true })
+                //tăng số lượng cảm xúc đó lên 1
                 this.resultData.likes[data] += 1;
+                //truyền lại đối tượng resultData cho trang gọi component này
                 this.onClickSub.emit({ action: { next: "LIKE" }, result: this.resultData });
             }
         })

@@ -24,8 +24,8 @@ export class HomeNewsPage {
   ngOnInit() {
     this.userInfo = { username: "903500888" }
     setTimeout(() => {
-      console.log(this.dynamicCards.items[0].actions)
-      console.log(this.dynamicCards.items[0].actions.like)
+      //console.log(this.dynamicCards.items[0].results)
+      //console.log(this.dynamicCards.items[0].results.likes["like"])
     }, 2000);
     this.refreshNews();
     this.events.subscribe('postok', () => {
@@ -83,17 +83,12 @@ export class HomeNewsPage {
         let items = [];
         data.forEach(el => {
           el.actions = JSON.parse(el.actions)
-          el.results = JSON.parse(el.results)
+          el.results = {}
           if (el.medias) {
             el.results.likes = JSON.parse(el.medias.likes)
             el.results.comments = JSON.parse(el.medias.comments)
             el.results.shares = JSON.parse(el.medias.shares)
             el.results.reads = JSON.parse(el.medias.reads)
-          }
-          el.short_detail = {
-            p: el.title
-            , note: el.time
-            , action: { color: "primary", icon: "more", next: "MORE" }
           }
           items.push(el);
         });
@@ -135,7 +130,7 @@ export class HomeNewsPage {
   }.bind(this);
 
   onClickAction(ev, group_id) {
-    console.log(group_id, ev)
+    //console.log(group_id, ev)
     let json_data = {
       group_id: group_id,
       result: ev.result.likes

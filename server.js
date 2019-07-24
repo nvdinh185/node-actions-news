@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 function main(isHttp) {
-  //CORS handle
+  //CORS handle --> cho phep cac domain được phép truy cập
   app.use(require('./handlers/cors-handler').cors);
 
   //server tin tức
