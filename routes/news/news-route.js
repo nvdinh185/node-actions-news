@@ -11,8 +11,8 @@ let handlers = resourceHandler.ResourceHandler;
 router.post('/post-news'
     , tokenHandler.getTokenNext          //lay req.token
     , tokenHandler.verifyProxyTokenNext  //lay req.user
-    , postHandler.formProcess        //lay req.form_data
-    , handlers.postNewsFiles        //luu csdl
+    , postHandler.formProcess            //lay req.form_data
+    , handlers.postNewsFiles            //luu csdl
 );
 router.post('/get-news'
     , tokenHandler.getTokenNext

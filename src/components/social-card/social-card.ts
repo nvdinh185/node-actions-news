@@ -59,7 +59,7 @@ export class SocialCard implements OnInit {
                     //da like truoc do roi, nen bam lan nay la unlike
                     //giảm số lượng cảm xúc đó 1
                     this.resultData.likes[this.resultData.likes[this.ownerData.username]] -= 1;
-                    //xóa username đó ra khỏi đối tượng resultData
+                    //xóa username đó ra khỏi đối tượng resultData, đồng thời giảm giá trị length đi 1
                     this.apiAuth.deleteObjectKey(this.resultData.likes, this.ownerData.username);
                     //truyền lại đối tượng resultData cho trang gọi component này
                     this.onClickSub.emit({ action: { next: "LIKE" }, result: this.resultData });
@@ -95,7 +95,7 @@ export class SocialCard implements OnInit {
         popover.onDidDismiss(data => {
             if (data) {
                 //console.log(data)
-                //thêm cảm xúc cho username vừa thực hiện hành động vào đối tượng resultData
+                //thêm cảm xúc cho username vừa thực hiện hành động vào đối tượng resultData, đồng thời tăng giá trị length lên 1
                 this.apiAuth.createObjectKey(this.resultData.likes, username, data);
                 //thêm thuộc tính cảm xúc đó vào nếu chưa có trong đối tượng resultData
                 if (!this.resultData.likes[data]) Object.defineProperty(this.resultData.likes, data, { value: 0, writable: true, enumerable: true, configurable: true })

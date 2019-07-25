@@ -243,7 +243,7 @@ export class DynamicPostPage implements OnInit {
 
         let form_data: FormData = new FormData();
 
-        //Các nội dung cần luu trữ vào csdl
+        //Các nội dung cần lưu trữ vào csdl
         //trong đó lưu ý 3 tham số là options và image_options_ và file_options thì cần phải parse sang json 
         form_data.append("content", this.postData.content);
         form_data.append("status", this.postData.status);

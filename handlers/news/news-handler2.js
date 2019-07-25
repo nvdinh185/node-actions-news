@@ -7,7 +7,7 @@ const db = new SQLiteDAO(dbFile);
 
 class ResourceHandler {
 
-    getNewsList(req, res) {
+    async getNewsList(req, res) {
         //req.user,
         //req.json_data.follows,
         //req.json_data.limit
@@ -19,39 +19,38 @@ class ResourceHandler {
             });
         }
         //console.log("users: ", users)
-        db.getRsts("select *\
-                    from news\
-                    where username in ("+ users + ")\
-                    order by time desc\
-                    LIMIT "+ (req.json_data && req.json_data.limit ? req.json_data.limit : 6) + "\
-                    OFFSET "+ (req.json_data && req.json_data.offset ? req.json_data.offset : 0) + "\
-                    ")
-            .then(async results => {
-                //lay file chi tiet tra cho nhom
-                if (results.length > 0) {
-                    for (let idx = 0; idx < results.length; idx++) {
-                        let files = await db.getRsts("select *\
-                                            from results\
-                                            where group_id = '"+ results[idx].group_id + "'\
+        try {
+            let results = await db.getRsts("select *\
+                                            from news\
+                                            where username in ("+ users + ")\
+                                            order by time desc\
+                                            LIMIT "+ (req.json_data && req.json_data.limit ? req.json_data.limit : 6) + "\
+                                            OFFSET "+ (req.json_data && req.json_data.offset ? req.json_data.offset : 0) + "\
                                             ")
-                        results[idx].medias = files[0]
-                    }
+            if (results.length > 0) {
+                for (let idx = 0; idx < results.length; idx++) {
+                    let files = await db.getRsts("select *\
+                                                from results\
+                                                where group_id = '"+ results[idx].group_id + "'\
+                                                ")
+                    results[idx].medias = files[0]
                 }
-                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                res.end(JSON.stringify(results
-                    , (key, value) => {
-                        if (value === null) { return undefined; }
-                        return value
-                    }
-                ));
-            }).catch(err => {
-                res.writeHead(404, { 'Content-Type': 'text/html' });
-                res.end(JSON.stringify(err));
-            })
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify(results
+                , (key, value) => {
+                    if (value === null) { return undefined; }
+                    return value
+                }
+            ));
+        } catch (err) {
+            res.writeHead(404, { 'Content-Type': 'text/html' });
+            res.end(JSON.stringify(err));
+        }
     }
 
-    postNewsFiles(req, res) {
-        //console.log('Du lieu truyen', req.form_data);
+    async postNewsFiles(req, res) {
+        console.log('Du lieu truyen', req.form_data);
         let filesDetails = [];
         if (req.form_data.files) {
             for (let key in req.form_data.files) {
@@ -69,42 +68,34 @@ class ResourceHandler {
         }
         let groupId = Date.now();
         if (req.form_data.params) {
-            new Promise(async (resolve, reject) => {
-                let jsonObj = {
-                    group_id: groupId,
-                    content: req.form_data.params.content,
-                    details: JSON.stringify(filesDetails),
-                    results: JSON.stringify({ likes: {}, comments: {}, shares: {}, reads: {} }),
-                    actions: JSON.stringify({ like: true, comment: true, share: true }),
-                    username: "901952666",
-                    time: Date.now()
-                }
-                let jsonObj2 = {
-                    group_id: groupId,
-                    likes: JSON.stringify({}),
-                    comments: JSON.stringify([]),
-                    shares: JSON.stringify([]),
-                    reads: JSON.stringify([])
-                }
-                try {
-                    let resultInsert = await db.insert(arrObj.convertSqlFromJson("news", jsonObj, []));
-                    let resultInsert2 = await db.insert(arrObj.convertSqlFromJson("results", jsonObj2, []));
-                    resolve(resultInsert)
-                } catch (e) {
-                    reject(e);
-                }
-            })
-                .then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify({ message: data }));
-                })
-                .catch(err => {
-                    res.writeHead(438, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify({
-                        error: err,
-                        message: "Lỗi ghi mới dữ liệu"
-                    }));
-                })
+            let jsonObj = {
+                group_id: groupId,
+                content: req.form_data.params.content,
+                details: JSON.stringify(filesDetails),
+                actions: JSON.stringify({ like: true, comment: true, share: true }),
+                username: "901952666",
+                time: Date.now()
+            }
+            let jsonObj2 = {
+                group_id: groupId,
+                likes: JSON.stringify({}),
+                comments: JSON.stringify([]),
+                shares: JSON.stringify([]),
+                reads: JSON.stringify([])
+            }
+            try {
+                let resultInsert = await db.insert(arrObj.convertSqlFromJson("news", jsonObj, []));
+                let resultInsert2 = await db.insert(arrObj.convertSqlFromJson("results", jsonObj2, []));
+
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ message: resultInsert2 }));
+            } catch (err) {
+                res.writeHead(438, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({
+                    error: err,
+                    message: "Lỗi ghi mới dữ liệu"
+                }));
+            }
         }
     }
 
